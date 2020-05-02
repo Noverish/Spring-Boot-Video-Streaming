@@ -33,7 +33,7 @@ class ExplorerController {
         File folder = new File("/archive" + fullPath);
 
         if (!folder.isDirectory()) {
-            throw new Exception("'" +  fullPath  + "' is not folder");
+            throw new ExplorerController.NotDirectoryException("'" + fullPath + "' is not folder");
         }
 
         File[] listOfFiles = folder.listFiles();
@@ -54,9 +54,18 @@ class ExplorerController {
         return "explorer";
     }
 
+    static class NotDirectoryException extends Exception {
+        private static final long serialVersionUID = 9038584551650821411L;
+
+        public NotDirectoryException(String message) {
+            super(message);
+        }
+    }
+
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public void handleException(Exception e, HttpServletResponse response) throws IOException {
+    public void handleException(ExplorerController.NotDirectoryException e, HttpServletResponse response)
+            throws IOException {
         response.setContentType("text/plain");
         PrintWriter writer = response.getWriter();
         writer.write(e.getMessage());
